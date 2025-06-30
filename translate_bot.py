@@ -2,10 +2,7 @@ import os, re, discord, aiohttp
 import aiohttp
 from aiohttp import web
 from discord import app_commands
-from dotenv import load_dotenv
 
-# 환경변수 로드
-load_dotenv()
 DISCORD_TOKEN   = os.getenv("DISCORD_TOKEN")
 CF_ID           = os.getenv("CF_ACCOUNT_ID")
 CF_TOKEN        = os.getenv("CF_API_TOKEN")
