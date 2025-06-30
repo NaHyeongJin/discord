@@ -6,6 +6,7 @@ import asyncio
 DISCORD_TOKEN   = os.getenv("DISCORD_TOKEN")
 CF_ID           = os.getenv("CF_ACCOUNT_ID")
 CF_TOKEN        = os.getenv("CF_API_TOKEN")
+KOYEB_URL       = os.getenv("KOYEB_URL")
 
 # 한·일 문자 체크용 정규식
 JA = re.compile(r'[\u3040-\u30ff\u31f0-\u31ff\u4e00-\u9faf]')
@@ -34,7 +35,7 @@ async def ping_self():
     while not bot.is_closed():
         try:
             async with aiohttp.ClientSession() as s:
-                await s.get(os.environ['KOYEP_URL'])
+                await s.get(KOYEB_URL)
         except:
             pass
         await asyncio.sleep(180)
