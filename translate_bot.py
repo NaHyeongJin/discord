@@ -101,6 +101,7 @@ async def translate_menu(interaction: discord.Interaction, message: discord.Mess
 @bot.event
 async def on_ready():
     await tree.sync()
+    bot.loop.create_task(start_web_server())
     bot.loop.create_task(ping_self())
     print(f"Bot ready: {bot.user}")
 
