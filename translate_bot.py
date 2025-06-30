@@ -37,7 +37,7 @@ async def ping_self():
                 await s.get(os.environ['KOYEP_URL'])
         except:
             pass
-    await asyncio.sleep(180)
+        await asyncio.sleep(180)
 
 async def translate(text: str, src: str, tgt: str) -> str:
     url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ID}/ai/run/@cf/meta/m2m100-1.2b"
