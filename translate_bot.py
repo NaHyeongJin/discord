@@ -1,7 +1,8 @@
-import os, re, discord, aiohttp
-import aiohttp
+from http import client
 from aiohttp import web
 from discord import app_commands
+import os, re, discord, aiohttp
+import asyncio
 
 DISCORD_TOKEN   = os.getenv("DISCORD_TOKEN")
 CF_ID           = os.getenv("CF_ACCOUNT_ID")
@@ -19,15 +20,33 @@ bot = discord.Client(intents=intents)
 tree = app_commands.CommandTree(bot)
 
 async def health_check(request):
-  return web.Response(text="OK", status=200)
+    return web.Response(text="OK", status=200)
 
 async def start_web_server():
-  app = web.Application()
-  app.router.add_get('/health', health_check) # Health Check API 추가
-  runner = web.AppRunner(app)
-  await runner.setup()
-  site = web.TCPSite(runner, '0.0.0.0', 8000)
-  await site.start()
+    app = web.Application()
+    app.router.add_get('/health', health_check) # Health Check API 추가
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8000)
+    await site.start()
+
+async def ping_self():
+    await client.wait_until_ready()
+    while not client.is_closed():
+        try:
+            async with aiohttp.ClientSession() as s:
+                await s.get(os.environ['KOYEP_URL'])
+        except:
+            pass
+    await asyncio.sleep(180)
+
+@client.event
+async def on_ready():
+    print("Bot Started")
+    await client.change_presence(status=discord.Status.online, activity=discord.Game("지켜보고 있다.👀"))
+    client.loop.create_task(start_web_server())
+    client.loop.create_task(ping_self()) # Self Ping 추가
+
 
 async def translate(text: str, src: str, tgt: str) -> str:
     url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ID}/ai/run/@cf/meta/m2m100-1.2b"
