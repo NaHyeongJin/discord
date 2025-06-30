@@ -1,4 +1,3 @@
-from http import client
 from aiohttp import web
 from discord import app_commands
 import os, re, discord, aiohttp
@@ -31,22 +30,14 @@ async def start_web_server():
     await site.start()
 
 async def ping_self():
-    await client.wait_until_ready()
-    while not client.is_closed():
+    await bot.wait_until_ready()
+    while not bot.is_closed():
         try:
             async with aiohttp.ClientSession() as s:
                 await s.get(os.environ['KOYEP_URL'])
         except:
             pass
     await asyncio.sleep(180)
-
-@client.event
-async def on_ready():
-    print("Bot Started")
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("지켜보고 있다.👀"))
-    client.loop.create_task(start_web_server())
-    client.loop.create_task(ping_self()) # Self Ping 추가
-
 
 async def translate(text: str, src: str, tgt: str) -> str:
     url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ID}/ai/run/@cf/meta/m2m100-1.2b"
@@ -109,6 +100,7 @@ async def translate_menu(interaction: discord.Interaction, message: discord.Mess
 @bot.event
 async def on_ready():
     await tree.sync()
+    bot.loop.create_task(ping_self())
     print(f"Bot ready: {bot.user}")
 
 bot.run(DISCORD_TOKEN)
